@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminLogin() {
   const [mode, setMode] = useState<'login'|'register'>('login');
@@ -12,8 +13,19 @@ export default function AdminLogin() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const router = useRouter();
+
+  const handleModeChange = () => {
+    setIsAnimating(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      setMode(mode === 'login' ? 'register' : 'login');
+      setIsAnimating(false);
+    }, 300);
+  };
 
   async function handleLogin() {
     setError('');
@@ -102,17 +114,17 @@ export default function AdminLogin() {
 
       {/* Centered card */}
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ width: 420, background: "#d67f25", borderRadius: 20, padding: 36, boxShadow: "0 10px 30px rgba(0,0,0,0.15)", textAlign: "center", color: "#000" }}>
-          <h2 style={{ marginTop: 0, marginBottom: 24, fontSize: 24 }}>{mode === 'login' ? 'Login User' : 'Create Account'}</h2>
+        <div style={{ width: "100%", maxWidth: 420, background: "#d67f25", borderRadius: 20, padding: "clamp(24px, 5vw, 36px)", margin: "120px 20px 120px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.15)", textAlign: "center", color: "#000", boxSizing: "border-box", transition: "all 0.6s ease" }}>
+          <h2 style={{ marginTop: 0, marginBottom: 24, fontSize: "clamp(20px, 5vw, 24px)" }}>{mode === 'login' ? 'Login User' : 'Create Account'}</h2>
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "stretch" }}>
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "stretch", transition: "all 0.6s ease", opacity: isAnimating ? 0 : 1 }}>
             {mode === 'register' && (
               <>
                 <label style={{ textAlign: "left", color: "#000", marginBottom: 8 }}>First name</label>
-                <input name="first_name" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First name" style={{ borderRadius: 8, padding: "12px 14px", border: "none", marginBottom: 14 }} />
+                <input name="first_name" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First name" style={{ borderRadius: 8, padding: "12px 14px", border: "none", marginBottom: 14, background: "#fff", color: "#000", fontSize: "clamp(14px, 2vw, 16px)", width: "100%", boxSizing: "border-box" }} />
 
                 <label style={{ textAlign: "left", color: "#000", marginBottom: 8 }}>Last name</label>
-                <input name="last_name" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last name" style={{ borderRadius: 8, padding: "12px 14px", border: "none", marginBottom: 14 }} />
+                <input name="last_name" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last name" style={{ borderRadius: 8, padding: "12px 14px", border: "none", marginBottom: 14, background: "#fff", color: "#000", fontSize: "clamp(14px, 2vw, 16px)", width: "100%", boxSizing: "border-box" }} />
               </>
             )}
 
@@ -124,7 +136,7 @@ export default function AdminLogin() {
               autoFocus
               autoComplete="username"
               placeholder="Enter username"
-              style={{ borderRadius: 8, padding: "12px 14px", border: "none", marginBottom: 14 }}
+              style={{ borderRadius: 8, padding: "12px 14px", border: "none", marginBottom: 14, background: "#fff", color: "#000", fontSize: "clamp(14px, 2vw, 16px)", width: "100%", boxSizing: "border-box" }}
             />
 
             <label style={{ textAlign: "left", color: "#000", marginBottom: 8 }}>Password</label>
@@ -136,22 +148,27 @@ export default function AdminLogin() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
                 autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                style={{ borderRadius: 8, padding: "12px 40px 12px 14px", border: "none", width: "100%" }}
+                style={{ borderRadius: 8, padding: "12px 40px 12px 14px", border: "none", width: "100%", background: "#fff", color: "#000", fontSize: "clamp(14px, 2vw, 16px)", boxSizing: "border-box" }}
               />
-              <button type="button" onClick={() => setShowPassword((s) => !s)} aria-label="toggle password" style={{ position: "absolute", right: 8, top: 8, background: "transparent", border: "none", cursor: "pointer" }}>
-                {showPassword ? "🙈" : "👁️"}
+              <button type="button" onClick={() => setShowPassword((s) => !s)} aria-label="toggle password" style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "transparent", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
 
             {mode === 'register' && (
               <>
                 <label style={{ textAlign: "left", color: "#000", marginBottom: 8 }}>Confirm password</label>
-                <input name="confirm_password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm password" style={{ borderRadius: 8, padding: "12px 14px", border: "none", marginBottom: 14 }} />
+                <div style={{ position: "relative", marginBottom: 14 }}>
+                  <input name="confirm_password" type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm password" style={{ borderRadius: 8, padding: "12px 40px 12px 14px", border: "none", width: "100%", background: "#fff", color: "#000", fontSize: "clamp(14px, 2vw, 16px)", boxSizing: "border-box" }} />
+                  <button type="button" onClick={() => setShowConfirmPassword((s) => !s)} aria-label="toggle confirm password" style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "transparent", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
               </>
             )}
 
             <div style={{ textAlign: "right", marginBottom: 14 }}>
-              <a href="#" onClick={(e) => { e.preventDefault(); setMode(mode === 'login' ? 'register' : 'login'); }} style={{ color: "#000", opacity: 0.85, fontSize: 13, textDecoration: "underline" }}>{mode === 'login' ? 'Create an account' : 'Back to login'}</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleModeChange(); }} style={{ color: "#000", opacity: 0.85, fontSize: 13, textDecoration: "underline" }}>{mode === 'login' ? 'Create an account' : 'Back to login'}</a>
             </div>
 
             {error && <div style={{ color: "#9b1c1c", marginBottom: 12 }}>{error}</div>}
@@ -162,12 +179,15 @@ export default function AdminLogin() {
               style={{
                 background: "#000",
                 color: "#fff",
-                padding: 12,
+                padding: "clamp(10px, 2vw, 12px)",
                 borderRadius: 8,
                 border: "none",
                 fontWeight: 600,
                 opacity: loading ? 0.6 : 1,
                 cursor: loading ? 'not-allowed' : 'pointer',
+                fontSize: "clamp(14px, 2vw, 16px)",
+                width: "100%",
+                boxSizing: "border-box",
               }}
             >
               {loading ? (mode === 'login' ? 'Logging in...' : 'Creating account...') : (mode === 'login' ? 'LOGIN' : 'Create account')}
