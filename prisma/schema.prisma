@@ -56,8 +56,8 @@ model survey_record {
 model survey_content {
   id               Int           @id @default(autoincrement())
   survey_id        Int
-  form_content_id  Int
+  form_content_id  Int?
   rating           Float?
   survey_record    survey_record @relation(fields: [survey_id], references: [id])
-  form_content     form_content  @relation(fields: [form_content_id], references: [id])
+  form_content     form_content? @relation(fields: [form_content_id], references: [id])
 }
