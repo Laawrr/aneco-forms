@@ -5,7 +5,7 @@ import "./index.css";
 
 const surveys = Array.from({ length: 6 });
 
-export default function HomePage() {
+export default function UserPage() {
   const [query, setQuery] = useState("");
 
   return (
@@ -16,7 +16,7 @@ export default function HomePage() {
         </div>
 
         <nav className="nav">
-          <Link href="/" className="nav-btn active">
+          <Link href="/userpage" className="nav-btn active">
             Survey Forms
           </Link>
           <Link href="/about" className="nav-btn">

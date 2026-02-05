@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React from "react";
-import "../index.css";
+import "../globals.css";
 
 export default function AboutPage() {
   return (
@@ -12,7 +12,7 @@ export default function AboutPage() {
         </div>
 
         <nav className="nav">
-          <Link href="/" className="nav-btn">
+          <Link href="/userpage" className="nav-btn">
             Survey Forms
           </Link>
           <Link href="/about" className="nav-btn active">
@@ -36,7 +36,7 @@ export default function AboutPage() {
           </p>
 
           <p style={{ marginTop: 18 }}>
-            <Link href="/" className="nav-btn">
+            <Link href="/userpage" className="nav-btn">
               Back to Survey Forms
             </Link>
           </p>

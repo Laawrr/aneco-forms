@@ -16,7 +16,7 @@ export default function UserPage() {
         </div>
 
         <nav className="nav">
-          <Link href="/userpage" className="nav-btn active">
+          <Link href="/" className="nav-btn active">
             Survey Forms
           </Link>
           <Link href="/about" className="nav-btn">
@@ -67,8 +67,8 @@ export default function UserPage() {
         </div>
       </main>
 
-      <footer className="footer">
-        <div className="footer-inner">Copyright © 2016 ANECO, INC.</div>
+      <footer style={{ height: 40, background: "#000", color: "#f3b04d", display: "flex", alignItems: "center", paddingLeft: 12 }}>
+        <div style={{ fontSize: 12 }}>Copyright © 2016 ANECO, INC.</div>
       </footer>
     </div>
   );
