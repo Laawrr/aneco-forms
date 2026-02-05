@@ -1,0 +1,452 @@
+ANECO.PH DIGITAL SURVEY SYSTEM
+Full Development Blueprint (Next.js + MySQL + Prisma)
+
+1. SYSTEM OVERVIEW (WHAT YOU ARE BUILDING)
+Public Side (No Login)
+Landing page /
+
+
+List of available survey forms
+
+
+Consumer selects a form
+
+
+Consumer answers survey questions
+
+
+Submits survey
+
+
+Data saved securely
+
+
+Admin Side (Login Required)
+Admin authentication
+
+
+Manage survey forms
+
+
+Manage questions per form
+
+
+View survey submissions
+
+
+Analytics dashboard (graphs, statistics)
+
+
+Export or view raw data
+
+
+
+2. TECH STACK (STANDARDIZED)
+Core
+Next.js 14+ (App Router)
+
+
+MySQL
+
+
+Prisma ORM
+
+
+
+
+TypeScript
+
+
+Styling
+Tailwind CSS
+
+
+ShadCN/UI (admin UI components)
+
+
+Authentication
+NextAuth.js
+
+
+bcryptjs (password hashing)
+
+
+Charts / Analytics
+Chart.js + react-chartjs-2
+
+
+Validation & API
+Zod (schema validation)
+
+
+Axios (optional, or native fetch)
+
+
+Utilities
+dotenv
+
+
+date-fns
+
+
+clsx
+
+
+3. PROJECT STRUCTURE (MANDATORY)
+aneco-survey/
+│
+├── app/
+│   ├── page.tsx                     # Landing page (survey selection)
+│   ├── survey/
+│   │   └── [formId]/
+│   │       └── page.tsx             # Public survey form
+│   │
+│   ├── admin/
+│   │   ├── login/
+│   │   │   └── page.tsx
+│   │   ├── dashboard/
+│   │   │   └── page.tsx
+│   │   ├── forms/
+│   │   │   └── page.tsx
+│   │   ├── analytics/
+│   │   │   └── page.tsx
+│
+│   ├── api/
+│   │   ├── auth/
+│   │   ├── forms/
+│   │   ├── survey/
+│   │   ├── analytics/
+│
+├── prisma/
+│   ├── schema.prisma
+│
+├── lib/
+│   ├── prisma.ts
+│   ├── auth.ts
+│
+├── components/
+│   ├── forms/
+│   ├── charts/
+│   ├── admin/
+│
+├── types/
+│
+├── middleware.ts
+├── tailwind.config.ts
+└── package.json
+
+
+
+
+4. PRISMA SETUP (MATCHING YOUR DB)
+schema.prisma
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model user {
+  id         Int      @id @default(autoincrement())
+  first_name String
+  last_name  String
+  admin      Boolean  @default(false)
+  username   String   @unique
+  password   String
+  forms      forms[]
+}
+
+model forms {
+  id              Int             @id @default(autoincrement())
+  form_name       String
+  form_description String?
+  user_id         Int
+  user            user            @relation(fields: [user_id], references: [id])
+  form_content    form_content[]
+  survey_record   survey_record[]
+}
+
+model form_content {
+  id                        Int     @id @default(autoincrement())
+  form_id                   Int
+  form_content_description  String
+  forms                     forms  @relation(fields: [form_id], references: [id])
+  survey_content            survey_content[]
+}
+
+model survey_record {
+  id              Int       @id @default(autoincrement())
+  name            String?
+  address         String?
+  email           String?
+  contact_no      String?
+  datetime        DateTime  @default(now())
+  assisting_staff String?
+  form_id         Int
+  forms           forms     @relation(fields: [form_id], references: [id])
+  survey_content  survey_content[]
+}
+
+model survey_content {
+  id               Int           @id @default(autoincrement())
+  survey_id        Int
+  form_content_id  Int
+  rating           Float?
+  survey_record    survey_record @relation(fields: [survey_id], references: [id])
+  form_content     form_content  @relation(fields: [form_content_id], references: [id])
+}
+
+
+
+5. TEAM DISTRIBUTION (4 DEVELOPERS)
+
+👤 Developer 1 — Backend & Database Lead
+Responsibilities
+Prisma schema
+
+
+API routes
+
+
+Data validation
+
+
+Database integrity
+
+
+Tasks
+Prisma setup
+
+
+CRUD APIs for:
+
+
+Forms
+
+
+Questions
+
+
+Survey submissions
+
+
+Analytics queries (grouping, averages)
+
+
+API response contracts
+
+
+
+👤 Developer 2 — Public Frontend (Consumer)
+Responsibilities
+Landing page
+
+
+Survey UI
+
+
+Form submission UX
+
+
+Tasks
+/ landing page
+
+
+Survey selection
+
+
+Dynamic form rendering
+
+
+Client-side validation
+
+
+Submit survey via API
+
+
+
+👤 Developer 3 — Admin Frontend
+Responsibilities
+Admin UI
+
+
+Forms & questions management
+
+
+Secure pages
+
+
+Tasks
+Admin login
+
+
+Create/edit forms
+
+
+Add/edit questions
+
+
+View submissions list
+
+
+Role protection middleware
+
+
+
+👤 Developer 4 — Analytics & Auth
+Responsibilities
+Authentication
+
+
+Analytics dashboard
+
+
+Charts & insights
+
+
+Tasks
+NextAuth setup
+
+
+Admin role enforcement
+
+
+Chart.js integration
+
+
+Statistics pages
+
+6. API CONTRACT (FRONTEND ↔ BACKEND)
+Forms
+GET    /api/forms              → list forms
+POST   /api/forms              → create form (admin)
+GET    /api/forms/:id          → get form + questions
+
+
+Survey Submission
+POST   /api/survey/submit
+Payload:
+{
+  formId,
+  respondent: { name, email, contact_no },
+  answers: [
+    { form_content_id, rating }
+  ]
+}
+
+Admin Analytics
+GET /api/analytics/forms/:id
+Response:
+{
+  totalResponses,
+  averageRatings,
+  perQuestionStats
+}
+
+7. ANALYTICS IMPLEMENTATION
+Metrics
+Total submissions per form
+
+
+Average rating per question
+
+
+Rating distribution
+
+
+Charts
+Bar chart (question averages)
+
+
+Line chart (submissions over time)
+
+
+Pie chart (rating distribution)
+
+
+Libraries
+npm install chart.js react-chartjs-2
+8. SECURITY & MIDDLEWARE
+Middleware
+// middleware.ts
+export function middleware(req) {
+  // Protect /admin routes
+}
+
+Passwords
+Hash using bcrypt
+
+
+Never expose password fields
+
+
+
+9. DEVELOPMENT PHASES (ORDER TO FOLLOW)
+Phase 1 – Setup
+Repo init
+
+
+Prisma + DB connection
+
+
+Tailwind & UI base
+
+
+Phase 2 – Core Backend
+Forms API
+
+
+Survey submission API
+
+
+Validation
+
+
+Phase 3 – Public Survey Flow
+Landing page
+
+
+Survey page
+
+
+Submit logic
+
+
+Phase 4 – Admin Panel
+Login
+
+
+Form/question CRUD
+
+
+Submission viewing
+
+
+Phase 5 – Analytics
+Aggregation queries
+
+
+Graphs & dashboards
+
+
+Phase 6 – QA & Deployment
+Edge cases
+
+
+Security review
+
+
+Production env
+
+
+
+10. FINAL NOTES (IMPORTANT)
+✔ No consumer login = anonymous survey records
+ ✔ Admin-only analytics
+ ✔ Prisma ensures DB safety
+ ✔ Next.js handles fullstack cleanly
+ ✔ Clear API contracts avoid FE/BE conflicts
+

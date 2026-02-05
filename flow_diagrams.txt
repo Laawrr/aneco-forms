@@ -1,0 +1,107 @@
+ANECO.PH — Flow Diagrams
+
+1) PUBLIC (CONSUMER) FLOW
+
+Landing Page
+  |
+  v
+List of Available Forms (/)
+  |
+  v
+Select Form (click) ---> GET /api/forms/:id
+  |
+  v
+Render Dynamic Survey Form (questions from `form_content`)
+  |
+  v
+Answer Questions (client validation)
+  |
+  v
+Submit ---> POST /api/survey/submit
+  Payload: { formId, respondent, answers: [{form_content_id, rating}] }
+  |
+  v
+Server: Validate (Zod) -> Save `survey_record` + `survey_content`
+  |
+  v
+Thank you / Confirmation Page
+
+
+2) ADMIN FLOW (AUTH REQUIRED)
+
+Admin Login Page (/admin/login)
+  |
+  v
+Authenticate (NextAuth / bcrypt) ---> create session
+  |
+  v
+Middleware enforces admin role -> /admin/* routes
+  |
+  v
+Admin Dashboard (/admin/dashboard)
+  |-- Manage Forms (/admin/forms): Create / Edit / Delete forms
+  |-- Manage Questions (form-specific): add/edit `form_content`
+  |-- View Submissions: list & raw export
+  |-- Analytics (/admin/analytics): per-form stats, charts
+
+Analytics Path: GET /api/analytics/forms/:id -> { totalResponses, averageRatings, perQuestionStats }
+
+
+3) AUTH FLOW (SIMPLE SEQUENCE)
+
+Admin credentials -> POST /api/auth/login
+  |
+  v
+Hash/verify password with `bcryptjs` -> create session (NextAuth)
+  |
+  v
+Token or session cookie stored -> Middleware checks session & admin role
+  |
+  v
+Grant access to `/admin/*` if admin
+
+
+4) DATA MODEL (PRISMA OVERVIEW)
+
+user (1) -- (N) forms
+forms (1) -- (N) form_content
+forms (1) -- (N) survey_record
+survey_record (1) -- (N) survey_content
+survey_content links `survey_record` and `form_content`
+
+Key models / fields (summary):
+- user: id, first_name, last_name, admin, username, password
+- forms: id, form_name, form_description, user_id
+- form_content: id, form_id, form_content_description
+- survey_record: id, name, address, email, contact_no, datetime, assisting_staff, form_id
+- survey_content: id, survey_id, form_content_id, rating
+
+
+5) API CONTRACT / QUICK REFERENCE
+
+GET  /api/forms           -> list forms
+POST /api/forms           -> create form (admin)
+GET  /api/forms/:id       -> get form + questions
+POST /api/survey/submit   -> submit survey (public)
+GET  /api/analytics/forms/:id -> analytics response
+
+
+6) SURVEY SUBMISSION SEQUENCE (DETAIL)
+
+1. Client loads form -> GET /api/forms/:id
+2. User answers and clicks Submit
+3. Client validates payload (Zod or client-side checks)
+4. Client POSTs to /api/survey/submit
+5. Server validates payload and permission (public allowed)
+6. Server writes `survey_record` (respondent data) and `survey_content` rows
+7. Server returns success -> client shows confirmation
+
+
+Notes & Tips:
+- Keep API responses consistent (status, data, error)
+- Use DB transactions when creating `survey_record` + multiple `survey_content` rows
+- Track submission datetime (DB default now())
+- Use role-based middleware to protect admin routes
+
+---
+File generated from `details.txt` (project blueprint) — use this as a reference for diagrams in docs or README.
