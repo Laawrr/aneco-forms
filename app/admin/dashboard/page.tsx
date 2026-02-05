@@ -6,16 +6,15 @@ import { useRouter } from "next/navigation";
 export default function AdminDashboard() {
   const router = useRouter();
 
+  // Authentication is enforced by `middleware.ts` on the server.
+  // No sensitive checks should rely on client-side localStorage.
   useEffect(() => {
-    const token = localStorage.getItem("admin-token");
-    if (!token) {
-      router.replace("/admin");
-    }
+    // we could fetch /api/auth/me if you want to show user info client-side
   }, [router]);
 
-  const logout = () => {
-    localStorage.removeItem("admin-token");
-    router.push("/admin");
+  const logout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/admin');
   };
 
   const cardData = [

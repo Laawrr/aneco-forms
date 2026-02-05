@@ -16,7 +16,8 @@ model user {
   username   String   @unique
   password   String
   forms      forms[]
-}
+  refresh_tokens refresh_token[]
+} 
 
 model forms {
   id               Int              @id @default(autoincrement())
@@ -28,7 +29,7 @@ model forms {
   survey_record    survey_record[]
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-}
+} 
 
 model form_content {
   id                       Int     @id @default(autoincrement())
@@ -38,7 +39,7 @@ model form_content {
   survey_content           survey_content[]
   order                    Int?
   required                 Boolean @default(false)
-}
+} 
 
 model survey_record {
   id              Int       @id @default(autoincrement())
@@ -51,7 +52,7 @@ model survey_record {
   form_id         Int
   forms           forms     @relation(fields: [form_id], references: [id])
   survey_content  survey_content[]
-}
+} 
 
 model survey_content {
   id               Int           @id @default(autoincrement())
@@ -60,4 +61,16 @@ model survey_content {
   rating           Float?
   survey_record    survey_record @relation(fields: [survey_id], references: [id])
   form_content     form_content? @relation(fields: [form_content_id], references: [id])
-}
+} 
+
+model refresh_token {
+  id         Int      @id @default(autoincrement())
+  tokenHash  String   @unique
+  userId     Int
+  user       user     @relation(fields: [userId], references: [id])
+  expiresAt  DateTime
+  revoked    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  replacedBy Int?
+} 
+
