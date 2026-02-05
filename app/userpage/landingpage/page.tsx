@@ -16,10 +16,10 @@ export default function UserPage() {
         </div>
 
         <nav className="nav">
-          <Link href="/userpage" className="nav-btn active">
+          <Link href="/userpage/landingpage" className="nav-btn active">
             Survey Forms
           </Link>
-          <Link href="/about" className="nav-btn">
+          <Link href="/userpage/about" className="nav-btn">
             About
           </Link>
           <Link href="/satisfaction" className="nav-btn">
@@ -42,7 +42,7 @@ export default function UserPage() {
 
         <div className="grid">
           {surveys.map((_, i) => (
-            <Link href={`/forms/${i}`} key={i} className="card-link">
+            <Link href={`/userpage/forms/${i}`} key={i} className="card-link">
               <article className="card">
                 <div className="card-preview">
                   <div className="preview-paper">

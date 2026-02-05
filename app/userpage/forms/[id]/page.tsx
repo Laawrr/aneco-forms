@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import "../../userpage/index.css";
 
 type Props = { params: { id: string } };
 
@@ -15,13 +14,13 @@ export default function FormDetail({ params }: Props) {
           <img src="/logo_aneco.png" alt="ANECO logo" className="logo-img" />
         </div>
 
-        <nav className="nav">
-          <Link href="/userpage" className="nav-btn">
-            Survey Forms
-          </Link>
-          <Link href="/about" className="nav-btn">
-            About
-          </Link>
+          <nav className="nav">
+            <Link href="/userpage/landingpage" className="nav-btn">
+              Survey Forms
+            </Link>
+            <Link href="/userpage/about" className="nav-btn">
+              About
+            </Link>
         </nav>
       </header>
 
@@ -36,7 +35,7 @@ export default function FormDetail({ params }: Props) {
           </p>
 
           <div style={{ marginTop: 20 }}>
-            <Link href="/userpage" className="nav-btn">
+              <Link href="/userpage/landingpage" className="nav-btn">
               ← Back to Surveys
             </Link>
           </div>
