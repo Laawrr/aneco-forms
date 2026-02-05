@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 export default function AdminForms() {
   const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem("admin-token");
-    if (!token) router.replace("/admin");
-  }, [router]);
+  // Authentication is enforced by the server layout.
+  // No client-side checks needed since JWT cookies are httpOnly
+  const logout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/admin');
+  };
 
   const data = ["Label text", "Label text", "Label text", "Label text"];
 
@@ -55,7 +57,7 @@ export default function AdminForms() {
                 <NavButton variant="primary" onClick={() => router.push("/admin/forms")}>
                   Forms
                 </NavButton>
-                <NavButton variant="danger" onClick={() => { localStorage.removeItem("admin-token"); router.push("/admin"); }}>
+                <NavButton variant="danger" onClick={logout}>
                   Logout
                 </NavButton>
               </>
