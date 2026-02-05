@@ -1,0 +1,47 @@
+"use client";
+import React from "react";
+import Link from "next/link";
+import "../../userpage/index.css";
+
+type Props = { params: { id: string } };
+
+export default function FormDetail({ params }: Props) {
+  const { id } = params;
+
+  return (
+    <div className="app">
+      <header className="header">
+        <div className="logo">
+          <img src="/logo_aneco.png" alt="ANECO logo" className="logo-img" />
+        </div>
+
+        <nav className="nav">
+          <Link href="/userpage" className="nav-btn">
+            Survey Forms
+          </Link>
+          <Link href="/about" className="nav-btn">
+            About
+          </Link>
+        </nav>
+      </header>
+
+      <main className="main">
+        <h1 className="page-title">Form Detail</h1>
+
+        <div style={{ maxWidth: 880 }}>
+          <h2>Form #{id}</h2>
+          <p style={{ color: "#6b7280" }}>
+            This is a placeholder detail page for the selected survey form.
+            Replace this content with the actual form builder/viewer as needed.
+          </p>
+
+          <div style={{ marginTop: 20 }}>
+            <Link href="/userpage" className="nav-btn">
+              ← Back to Surveys
+            </Link>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
