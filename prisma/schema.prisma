@@ -1,0 +1,63 @@
+// Prisma schema for ANECO.PH Digital Survey System
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model user {
+  id         Int      @id @default(autoincrement())
+  first_name String
+  last_name  String
+  admin      Boolean  @default(false)
+  username   String   @unique
+  password   String
+  forms      forms[]
+}
+
+model forms {
+  id               Int              @id @default(autoincrement())
+  form_name        String
+  form_description String?
+  user_id          Int
+  user             user             @relation(fields: [user_id], references: [id])
+  form_content     form_content[]
+  survey_record    survey_record[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model form_content {
+  id                       Int     @id @default(autoincrement())
+  form_id                  Int
+  form_content_description String
+  forms                    forms   @relation(fields: [form_id], references: [id])
+  survey_content           survey_content[]
+  order                    Int?
+  required                 Boolean @default(false)
+}
+
+model survey_record {
+  id              Int       @id @default(autoincrement())
+  name            String?
+  address         String?
+  email           String?
+  contact_no      String?
+  datetime        DateTime  @default(now())
+  assisting_staff String?
+  form_id         Int
+  forms           forms     @relation(fields: [form_id], references: [id])
+  survey_content  survey_content[]
+}
+
+model survey_content {
+  id               Int           @id @default(autoincrement())
+  survey_id        Int
+  form_content_id  Int?
+  rating           Float?
+  survey_record    survey_record @relation(fields: [survey_id], references: [id])
+  form_content     form_content? @relation(fields: [form_content_id], references: [id])
+}

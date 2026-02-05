@@ -34,3 +34,37 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+---
+
+## Phase 1 — Core Backend (Quick start)
+
+1. Copy `.env.example` to `.env` and update `DATABASE_URL`.
+2. Install new packages:
+
+```bash
+npm install
+```
+
+3. Generate Prisma client and run migrations:
+
+```bash
+npx prisma generate
+npm run prisma:migrate:dev
+
+# Optional: run seed to add sample data
+npx ts-node prisma/seed.ts
+```
+
+4. Start dev server:
+
+```bash
+npm run dev
+```
+
+APIs available (Phase 1):
+- GET `/api/forms` — list forms
+- POST `/api/forms` — create form (admin use)
+- POST `/api/survey/submit` — submit a survey
+
+Refer to `roadmap.txt` and `details.txt` for next steps and API contracts.

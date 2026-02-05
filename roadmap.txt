@@ -1,0 +1,149 @@
+ANECO.PH — Full Roadmap
+
+Overview
+--------
+Goal: Build the ANECO.PH Digital Survey System — public survey site (no consumer login), and an admin panel for managing forms, questions, viewing submissions, analytics, and exports.
+Suggested total duration: ~8–10 weeks (adjustable by priority and team size).
+
+Team roles (from blueprint)
+---------------------------
+- Developer 1 — Backend & Database Lead
+- Developer 2 — Public Frontend (Consumer)
+- Developer 3 — Admin Frontend
+- Developer 4 — Analytics & Auth
+
+Roadmap Phases (detailed)
+-------------------------
+Phase 0 — Planning & Setup (3–5 days)
+- Tasks:
+  - Create repo, set branch strategy (main, develop, feature/*)
+  - Add README, contribution guide, issue templates
+  - Setup environment management (.env.example)
+  - Initialize Next.js + TypeScript, Tailwind, Prettier/ESLint
+  - Add Prisma, connect to MySQL, create initial migrations
+  - CI: basic lint/test job on push
+- Owner: Dev 1
+- Deliverables: working local dev environment, Prisma connected, CI pipeline
+- Acceptance: project builds, tests run, DB migrations apply successfully
+
+Phase 1 — Core Backend (10–14 days)
+- Tasks:
+  - Finalize Prisma schema (models from blueprint)
+  - Implement DB migrations and seed data (sample forms + questions)
+  - Implement API endpoints with validation (Zod):
+    - GET /api/forms
+    - GET /api/forms/:id
+    - POST /api/forms (admin)
+    - POST /api/survey/submit
+    - GET /api/analytics/forms/:id
+  - Implement transaction-safe save for survey submission (record + content rows)
+  - Add integration tests for endpoints
+  - Add basic error handling and consistent response format
+- Owners: Dev 1, Dev 4 (analytics queries)
+- Deliverables: CRUD APIs, validations, tests
+- Acceptance: endpoints pass tests, submissions write expected rows, analytics endpoint returns expected aggregates
+
+Phase 2 — Public Frontend (7–10 days)
+- Tasks:
+  - Build Landing page (/): list forms, search/filter if needed
+  - Implement dynamic survey page (/survey/[formId]): render questions from `form_content`
+  - Client-side validation and UX for required fields / ratings
+  - POST submission flow with success/thank-you page
+  - Responsive design and accessibility checks
+  - Add unit/integration tests for main components
+- Owner: Dev 2
+- Deliverables: usable public flow, form rendering, successful submissions
+- Acceptance: end-to-end submission flow works and writes to DB, mobile-responsive, accessibility basics passed
+
+Phase 3 — Admin Frontend & Auth (10–14 days)
+- Tasks:
+  - Implement Admin login (/admin/login) using NextAuth or custom session + bcrypt
+  - Middleware to protect /admin routes and enforce admin role
+  - Admin Dashboard (/admin/dashboard)
+  - Forms management: create/edit/delete forms and `form_content` questions
+  - View submissions: list submissions per form, view details, export CSV/JSON
+  - Add role-based UI and validation for admin tasks
+  - Add tests and authorization checks
+- Owners: Dev 3, Dev 4 (auth)
+- Deliverables: protected admin UI, forms & questions CRUD, submission viewer
+- Acceptance: admin-only routes enforced, CRUD operations tested and working, exports available
+
+Phase 4 — Analytics, Charts & Reports (5–8 days)
+- Tasks:
+  - Implement analytics APIs: aggregates, per-question averages, distributions
+  - Add Chart.js/react-chartjs-2 UI components in /admin/analytics
+  - Add filters (date range, per-form, per-question) and export option for reports
+  - Validate analytics accuracy against raw data
+- Owner: Dev 4
+- Deliverables: analytics endpoints, charts, filters, export
+- Acceptance: charts render correctly, numbers match database queries, filters apply correctly
+
+Phase 5 — QA, Hardening & Performance (5–7 days)
+- Tasks:
+  - Add comprehensive tests (unit, integration, basic e2e via Playwright or Cypress)
+  - Security review: validate inputs, avoid SQL injection, do not log sensitive fields
+  - Rate limiting on public endpoints (prevent spam submissions)
+  - Add logging and Sentry or other error tracking integration
+  - Add database backup / migration rollout plans
+- Owners: Dev 1 (DB), Dev 4 (security)
+- Deliverables: test coverage, security fixes, monitoring
+- Acceptance: critical flows covered by automated tests and security issues fixed/mitigated
+
+Phase 6 — Deployment & Monitoring (3–5 days)
+- Tasks:
+  - Setup staging & production environments (Vercel / platform of choice), environment variables
+  - Run database migrations on staging, test end-to-end
+  - Setup health checks, uptime monitoring, alerting (email or Slack)
+  - Implement backup & restore strategy for MySQL
+- Owners: Dev 1, Dev 4
+- Deliverables: production-ready deployment, monitoring and backups
+- Acceptance: staging and production deployments succeed, DB backups verified
+
+Phase 7 — Polish & Future Enhancements (ongoing)
+- Optional improvements:
+  - Multi-language support
+  - Role management and invite flow
+  - Advanced exports (Excel, scheduled reports)
+  - Bulk import of forms/questions
+  - Rate-limited public API tokens for partners
+- Timeline: backlog-driven
+
+Milestones
+----------
+- M1: Setup complete & initial schema/migrations (end of Week 1)
+- M2: Core APIs stable & seeded (end of Week 3)
+- M3: Public consumer flow live on staging (end of Week 5)
+- M4: Admin UI + auth complete (end of Week 7)
+- M5: Analytics & QA complete (end of Week 8–9)
+- M6: Production deployment and monitoring in place (end of Week 9–10)
+
+Release Checklist
+-----------------
+- All critical routes covered by automated tests
+- Admin routes protected and verified
+- Backup/restore tested
+- Documentation updated (README + API contract)
+- Performance check (page load times acceptable)
+
+Acceptance Criteria (project-level)
+----------------------------------
+- Public users can submit surveys (no login) and data is stored correctly
+- Admins can authenticate, manage forms/questions, view submissions, and see analytics
+- Analytics numbers match raw submission data
+- Exports work and are consistent
+- Security and privacy measures are in place for admin credentials and DB
+
+Risks & Mitigations
+-------------------
+- Spam submissions: add rate limiting & captcha
+- Incorrect analytics: cross-validate with raw data; write tests
+- DB schema changes: use migrations + backwards-compatible updates
+
+How to use this roadmap
+-----------------------
+- Convert each high-level task into issues in your tracker and assign owner + estimate
+- Run sprints by phase or split into 2-week cycles
+- Re-evaluate after each milestone and adjust timeline as needed
+
+---
+Generated from project blueprint and `flow_diagrams.txt`.
