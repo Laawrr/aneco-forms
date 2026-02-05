@@ -16,7 +16,7 @@ export default function FormDetail({ params }: Props) {
         </div>
 
         <nav className="nav">
-          <Link href="/" className="nav-btn">
+          <Link href="/userpage" className="nav-btn">
             Survey Forms
           </Link>
           <Link href="/about" className="nav-btn">
@@ -36,7 +36,7 @@ export default function FormDetail({ params }: Props) {
           </p>
 
           <div style={{ marginTop: 20 }}>
-            <Link href="/" className="nav-btn">
+            <Link href="/userpage" className="nav-btn">
               ← Back to Surveys
             </Link>
           </div>
