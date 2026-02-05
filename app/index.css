@@ -3,21 +3,31 @@
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial;
   color: #111827;
-  padding: 40px 48px 80px;
+  padding: 0;
   background: white;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .header {
   display: flex;
   align-items: center;
   gap: 24px;
+  padding: 20px 48px;
   margin-bottom: 32px;
+  background: #F5F5F5;
+}
+
+.main {
+  flex: 1;
+  padding: 0 48px 80px;
 }
 
 .logo-img{ height:56px; width:auto; display:block }
 
 .nav { display:flex; gap:12px; align-items:center; margin-left:12px }
-.nav-btn{ background:#f3f4f6; border:none; padding:8px 16px; border-radius:9999px; font-weight:600 }
+.nav-btn{ background:#f3f4f6; border:none; padding:8px 16px; border-radius:9999px; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block }
 .nav-btn.active{ background:#ff9b57; color:white }
 
 .search { margin-left:auto }
